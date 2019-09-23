@@ -18,11 +18,26 @@ connection.connect(function(err) {
 connection.query(`SELECT * FROM products;`, function(error, res){
     if (error) throw error;
     console.log(res)
+    orderQuery();
 })
 
-// function orderQuery(){
-
-// }
+function orderQuery(){
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'item_id',
+            message: 'What is the item ID of the product you would like to purchase?'
+        }, 
+        {
+            type: 'input',
+            name: 'units',
+            message: 'How many unit would you like to purchase?'
+        },
+    ]).then(function(answers, err) {
+        if (err) throw err;
+        console.log(answers);
+    })
+};
 
 
 
