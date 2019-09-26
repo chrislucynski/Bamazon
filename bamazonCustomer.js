@@ -18,10 +18,6 @@ connection.connect(function(err) {
 connection.query(`SELECT * FROM products;`, function(error, res){
     if (error) throw error;
     console.log(res)
-    orderQuery();
-})
-
-function orderQuery(){
     inquirer.prompt([
         {
             type: 'input',
@@ -30,14 +26,45 @@ function orderQuery(){
         }, 
         {
             type: 'input',
-            name: 'units',
+            name: 'stock_quantity',
             message: 'How many unit would you like to purchase?'
         },
     ]).then(function(answers, err) {
         if (err) throw err;
-        console.log(answers);
+        var customerItemId = answers.item_id;
+        var customerProductName = res[customerItemId-1].product_name
+        var unitsRequested = answers.stock_quantity
+        var remainingUnits = res[customerItemId-1].stock_quantity
+        if(unitsRequested < remainingUnits){
+            console.log('Processing your request now. Updating database...')
+            var unitPrice;
+            var purchaseQuery = connection.query(
+                "UPDATE products SET ? WHERE ?",
+                [
+                  {
+                    stock_quantity: remainingUnits - unitsRequested
+                  },
+                  {
+                    item_id: customerItemId
+                  }
+                ],
+                function(err, res) {
+                  if (err) throw err;
+                }
+              );
+                var unitPrice = res[customerItemId -1].price;
+                var totalPrice = unitPrice * unitsRequested
+                console.log('The price of the ' + customerProductName + ' you would like is ' + unitPrice + '.')
+                console.log('Your total comes out to: $' + totalPrice);
+            // 
+              console.log(purchaseQuery.sql);
+
+        } else {
+          console.log('Insufficient quantity!')
+        }
     })
-};
+})
+
 
 
 
@@ -48,93 +75,27 @@ function orderQuery(){
 //     console.log(res)
 // })
 
+// function updateProduct() {
+//     console.log("Updating product quantity...\n");
+//     var query = connection.query(
+//       "UPDATE products SET ? WHERE ?",
+//       [
+//         {
+//           stock_quantity: actualUnits - unitsRequested
+//         },
+//         {
+//           item_id: customerItemId
+//         }
+//       ],
+//       function(err, res) {
+//         if (err) throw err;
+//         console.log(res.affectedRows + " products updated!\n");
+//       }
+//     );
+//     console.log(query.sql);
+//   }
 
-// examples for inquirer.prompts
-// <----------------------->
-// function queryList() {
-//     inquirer.prompt([
-//     {
-//         type: 'list',
-//         name: "query_list",
-//         message: "Which would you like to do?",
-//         choices: ["Search for songs by artist name.", "Search for artists.", "Select range of dates.", "Search for song."]
-//     }, 
-//     ]).then(function(answers, err) {
-//         if (err) throw err;
-//         var optionSelected = answers.query_list;
-//         switch (optionSelected) {
-//             case 'Search for songs by artist name.':
-//                 // console.log('Search for songs by artist name.');
-//                 songByArtist();
-//                 break;
-//             case 'Search for artists.':
-//                 // console.log('Search for artists.');
-//                 artistSearch();
-//                 break;
-//             case 'Select range of dates.':
-//                 // console.log('Select range of dates.');
-//                 dateRange();
-//                 break;
-//             case 'Search for song.':
-//                 // console.log('Search for song.');
-//                 songSearch();
-//                 break;
-//             default:
-//                 console.log('Sorry, we do not have anything that matches that.');
-//                 break;
-//         }
-//     })
-// };
 
-// function songByArtist(){
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "songsByArtist",
-//             message: "Search for songs by artist name."
-//         }
-//     ]).then(function(answers, err) {
-//         if (err) throw err;
-//         userInput = answers.songsByArtist;
-//         console.log(userInput)
-//     })
-// };
-// function artistSearch(){
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "artists",
-//             message: "Search for an artists."
-//         }
-//     ]).then(function(answers, err) {
-//         if (err) throw err;
-//         userInput = answers.artists;
-//         console.log(userInput)
-//     })
-// };
-// function dateRange(){
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "range",
-//             message: "Select a range of dates."
-//         }
-//     ]).then(function(answers, err) {
-//         if (err) throw err;
-//         userInput = answers.range;
-//         console.log(userInput)
-//     })
-// };
-// function songSearch(){
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "songs",
-//             message: "Search for a song."
-//         }
-//     ]).then(function(answers, err) {
-//         if (err) throw err;
-//         userInput = answers.songs
-//         console.log(userInput)
-//     })
-// };
+
+
+
