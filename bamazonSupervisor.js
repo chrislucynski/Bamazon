@@ -101,34 +101,54 @@ connection.query(`SELECT * FROM products;`, function(error, response){
     function viewProductSales(){
         connection.query(
             // `SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
-            `SELECT  
-            departments.department_id,
-            departments.department_name, 
-            departments.over_head_costs,
-            products.product_sales
-            FROM departments 
-            INNER JOIN products 
-            ON departments.department_name = products.department_name
-            GROUP BY departments.department_id, departments.department_name, 
-            departments.over_head_costs, products.product_sales
-            ORDER BY departments.department_id;`, function(err, data){
+            `SELECT d.department_id, d.department_name, 
+            d.over_head_costs, p.product_sales,
+            sum(p.product_sales - d.over_head_costs) as total_profit 
+            FROM products p, departments d
+            where p.department_name = d.department_name
+            group by d.department_id, d.department_name, d.over_head_costs, p.product_sales;`, 
+            function(err, data){
                 if(err) throw err;
                 console.log(data)
+                for(var i = 0; i < data.length; i++){
+                    // console.log(data[i].department_id)
+                    // console.log(data[i].department_name)
+                    // console.log(data[i].over_head_costs)
+                    // console.log(data[i].total_profit)
+                    var table = new Table({
+                        head: 
+                        [
+                            'Department ID:', 
+                            'Department Name:', 
+                            'Overhead Costs:', 
+                            'Product Sales:',
+                            'Total:'
+                        ]
+                        , colWidths: [18, 20, 18, 18, 12]
+                    });
+                
+                    table.push(
+                        [
+                            data[i].department_id,
+                            data[i].department_name,
+                            '$' + data[i].over_head_costs,
+                            '$' + data[i].product_sales,
+                           '$' + data[i].total_profit
+                        ]
+                    );
+                    console.log(table.toString());
+                }
         })
     }
 
-    // var table = new Table({
-    //     head: ['TH 1 label', 'TH 2 label']
-    //     , colWidths: [100, 200]
-    //     });
-
-    //     table.push(
-    //     ['First value', 'Second value']
-    //     , ['First value', 'Second value']
-    //     );
-
-    //     console.log(table.toString());
 })
+
+// `SELECT d.department_id, d.department_name, 
+// d.over_head_costs, p.product_sales,
+// sum(p.product_sales - d.over_head_costs) as total_profit 
+// FROM products p, departments d
+// where p.department_name = d.department_name
+// group by d.department_id, d.department_name, d.over_head_costs, p.product_sales;`
 
 
 
