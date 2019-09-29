@@ -1,5 +1,6 @@
 var inquirer = require('inquirer');
 var mysql = require("mysql");
+var Table = require('cli-table')
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -16,7 +17,7 @@ connection.connect(function(err) {
 
 connection.query(`SELECT * FROM products;`, function(error, res){
   if (error) throw error;
-  console.log(res)
+  // console.log(res)
   function choices(){
     inquirer.prompt([
       {
@@ -30,8 +31,29 @@ connection.query(`SELECT * FROM products;`, function(error, res){
         switch (choiceAnswers.choicesList) {
           case 'View products':
             for(var i = 0; i < res.length; i++){
-              console.log('Item ID#: ' + res[i].item_id + ', Product Name: ' + res[i].product_name)
-            }  
+              var table = new Table({
+                  head: 
+                  [
+                      'Item ID:', 
+                      'Product Name:', 
+                      'Department Name:', 
+                      'Price:', 
+                      'Stock Quantity:',
+                  ]
+                  , colWidths: [13, 26, 18, 10, 17]
+              });
+          
+              table.push(
+                  [
+                      res[i].item_id,
+                      res[i].product_name,
+                      res[i].department_name,
+                      '$' + res[i].price,
+                      res[i].stock_quantity
+                  ]
+              );
+              console.log(table.toString());
+          }
             choices();
             break;
             case 'Purchase products':
@@ -86,7 +108,6 @@ connection.query(`SELECT * FROM products;`, function(error, res){
             if (err) throw err;
           }
         );
-          console.log(res[customerItemId - 1].product_sales)
           console.log(
             'The price of the ' + 
             customerProductName + 

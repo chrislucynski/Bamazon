@@ -1,12 +1,6 @@
-// Create another Node app called bamazonSupervisor.js. 
-// Running this application will list a set of menu options:
-    // View Product Sales by Department
-    // Create New Department
-
 var inquirer = require('inquirer');
 var mysql = require("mysql");
 var Table = require('cli-table')
-
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -43,14 +37,6 @@ connection.query(`SELECT * FROM products;`, function(error, response){
             switch (choicesResponse.choicesList) {
                 case 'View products sales by department':
                     viewProductSales();
-                    // for(var i = 0; i < response.length; i++){
-                    //   console.log(
-                    //       'Item ID#: ' + response[i].item_id + 
-                    //       ', Product Name: ' + response[i].product_name +
-                    //       ', Price: ' + response[i].price +
-                    //       ', Quantity: ' + response[i].stock_quantity
-                    //   )
-                    // }  
                     supervisorChoices()
                     break;
                 case 'Create new department':
@@ -100,21 +86,19 @@ connection.query(`SELECT * FROM products;`, function(error, response){
     }
     function viewProductSales(){
         connection.query(
-            // `SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
-            `SELECT d.department_id, d.department_name, 
-            d.over_head_costs, p.product_sales,
+            `SELECT d.department_id, p.department_name, 
+            d.over_head_costs, 
+            sum(p.product_sales) as total_product_sales,
             sum(p.product_sales - d.over_head_costs) as total_profit 
             FROM products p, departments d
-            where p.department_name = d.department_name
-            group by d.department_id, d.department_name, d.over_head_costs, p.product_sales;`, 
+            WHERE p.department_id = d.department_id
+            GROUP BY d.department_id, p.department_name, 
+            d.over_head_costs  
+            ORDER BY p.department_id;`, 
             function(err, data){
                 if(err) throw err;
                 console.log(data)
                 for(var i = 0; i < data.length; i++){
-                    // console.log(data[i].department_id)
-                    // console.log(data[i].department_name)
-                    // console.log(data[i].over_head_costs)
-                    // console.log(data[i].total_profit)
                     var table = new Table({
                         head: 
                         [
@@ -132,7 +116,7 @@ connection.query(`SELECT * FROM products;`, function(error, response){
                             data[i].department_id,
                             data[i].department_name,
                             '$' + data[i].over_head_costs,
-                            '$' + data[i].product_sales,
+                            '$' + data[i].total_product_sales,
                            '$' + data[i].total_profit
                         ]
                     );
@@ -143,12 +127,6 @@ connection.query(`SELECT * FROM products;`, function(error, response){
 
 })
 
-// `SELECT d.department_id, d.department_name, 
-// d.over_head_costs, p.product_sales,
-// sum(p.product_sales - d.over_head_costs) as total_profit 
-// FROM products p, departments d
-// where p.department_name = d.department_name
-// group by d.department_id, d.department_name, d.over_head_costs, p.product_sales;`
 
 
 

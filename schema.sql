@@ -25,28 +25,27 @@ ALTER TABLE products
 
 
 -- <-----INNER JOIN----->
-SELECT  
-departments.department_id,
-departments.department_name, 
-departments.over_head_costs,
-products.product_sales
-FROM departments 
-INNER JOIN products 
-ON departments.department_name = products.department_name
-GROUP BY departments.department_name, 
-departments.department_id, 
-departments.over_head_costs, 
-products.product_sales
-ORDER BY departments.department_id;
-
--- OR THIS --
-SELECT d.department_id, d.department_name, 
-d.over_head_costs,
+SELECT d.department_id, p.department_name, 
+d.over_head_costs, 
+sum(p.product_sales) as total_product_sales,
 sum(p.product_sales - d.over_head_costs) as total_profit 
 FROM products p, departments d
-where p.department_name = d.department_name
-group by d.department_id, d.department_name, d.over_head_costs;
+where p.department_id = d.department_id
+group by d.department_id, p.department_name, 
+d.over_head_costs  
+order by p.department_id;
 
+-- OR THIS --
+SELECT d.department_id, p.department_name, 
+d.over_head_costs, p.product_sales,
+sum(p.product_sales - d.over_head_costs) as total_profit 
+FROM products p, departments d
+where p.department_id = d.department_id
+group by d.department_id, p.department_name, 
+d.over_head_costs, p.product_salesdepartments
+order by p.department_id;
+
+SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')); 
 
 
 
