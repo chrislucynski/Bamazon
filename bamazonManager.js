@@ -25,7 +25,7 @@ connection.query(`SELECT * FROM products;`, function(error, res){
           type: 'list',
           name: 'choicesList',
           message: 'What would you like to do?',
-          choices: ['View products', 'View Items with Low Inventory', 'Add to Inventory', 'Add New Product', 'Exit']
+          choices: ['View products', 'View Products with Low Inventory', 'Add to Inventory', 'Add New Product', 'Exit']
         }
       ]).then(function(choiceAnswers, err){
           switch (choiceAnswers.choicesList) {
@@ -56,7 +56,7 @@ connection.query(`SELECT * FROM products;`, function(error, res){
             }
                 managerChoices()
                 break;
-            case 'View Items with Low Inventory':
+            case 'View Products with Low Inventory':
                 for(var i = 0; i < res.length; i++){
                     if(res[i].stock_quantity < 5){
                         console.log('Product Name: ' + res[i].product_name + ', Quantity: ' + res[i].stock_quantity)
