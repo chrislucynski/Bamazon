@@ -87,7 +87,12 @@ connection.query(`SELECT * FROM products;`, function(error, res){
           }
         );
           console.log(res[customerItemId - 1].product_sales)
-          console.log('The price of the ' + customerProductName + ' you would like is $' + unitPrice + '.')
+          console.log(
+            'The price of the ' + 
+            customerProductName + 
+            ' you would like is $' + 
+            unitPrice + '.'
+          )
           console.log('Your total comes out to: $' + totalPrice);
       } else {
         console.log('Insufficient quantity!')
@@ -95,20 +100,6 @@ connection.query(`SELECT * FROM products;`, function(error, res){
       choices();
     })
   }
-  // function updateProductSales(){
-  //   connection.query(
-  //     "UPDATE products SET ? WHERE ?",
-  //     [
-  //       {
-  //         product_sales: res[customerItemId-1].product_sales + totalPrice
-  //       },
-  //       {
-  //         item_id: customerItemId
-  //       }
-  //     ]
-  //   )
-  //   console.log(query.sql)
-  // }
 })
 
 
