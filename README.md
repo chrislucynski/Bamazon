@@ -34,6 +34,8 @@ After the packages have been installed correctly, the user may open up any of th
 In order to open up each file and run their desired functions, the suer will need to type `node <js file name>` into the command line to open the desired file. For example, if the user would like the manager view, they would need to type in `node bamazonManager.js`.
 
 ![](images/customer_view.gif)
+![](images/manager_view.gif)
+![](images/supervisor_view.gif)
 
 ### Where users can get help with your project
 Users can get help with this project by visiting sites that contain information on MySQL, npm and node, or by reading the instructions listed above.

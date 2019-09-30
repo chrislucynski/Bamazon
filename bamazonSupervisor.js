@@ -16,7 +16,6 @@ connection.connect(function(err) {
 });
 
 connection.query(`SELECT * FROM products;`, function(error, response){
-    // console.log(response) 
     supervisorChoices();
     if (error) throw error;
     
@@ -33,7 +32,6 @@ connection.query(`SELECT * FROM products;`, function(error, response){
                 ]
             }
         ]).then(function(choicesResponse){
-            console.log(choicesResponse)
             switch (choicesResponse.choicesList) {
                 case 'View products sales by department':
                     viewProductSales();
@@ -53,7 +51,6 @@ connection.query(`SELECT * FROM products;`, function(error, response){
     }
     function createNewDepartment(){
        connection.query("Select * FROM departments", function(err, data){
-           console.log(data)
             if (err) throw err;
             console.log('Create a new Department')
             inquirer.prompt([
@@ -97,7 +94,6 @@ connection.query(`SELECT * FROM products;`, function(error, response){
             ORDER BY p.department_id;`, 
             function(err, data){
                 if(err) throw err;
-                console.log(data)
                 for(var i = 0; i < data.length; i++){
                     var table = new Table({
                         head: 
