@@ -16,14 +16,26 @@ select * from departments where department_name= 'Medical Supplies';
  
 
 --  <-----PRODUCTS----->
-INSERT INTO departments (product_name, department_name, price, stock_quantity, product_sales, department_id)
-	VALUES('heating pad', 'Medical Supplies', '375.00', '111', '1', '1'), 
-		('walker', 'Medical Supplies', '62.00', '25', '2', '1'),
-		('medical bed', 'Medical Supplies', '3750.00', '104', '75001', '1'),
-		('generic aspirin', 'Medications', '8.00', '600', '15', '2'),
-		('generic steroid cream', 'Medications', '12.00', '170', '1', '2'),
-		('generic beta-blocker', 'Medications', '10.00', '500', '8', '2');
+CREATE TABLE products(
+item_id INT AUTO_INCREMENT NOT NULL,
+product_name VARCHAR(50) NOT NULL,
+department_name VARCHAR(50) NOT NULL,
+price DECIMAL (10, 2) NOT NULL,
+stock_quantity INT(25),
+PRIMARY KEY(item_id)
+);
 
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+	VALUES('wheelchair', 'Medical Supplies', '250.00', '40'),
+    ('oxygen tank', 'Medications', '50.00', '250'),
+    ('heating pad', 'Medical Supplies', '375.00', '15'),
+    ('generic aspirin', 'Medications', '8.00', '500'),
+    ('walker', 'Medical Supplies', '62.00', '25'),
+    ('generic steroid cream', 'Medications', '12.00', '75'),
+    ('generic beta-blocker', 'Medications', '10.00', '500'),
+    ('generic stool softener', 'Medications', '10.00', '150'),
+    ('medical bed', 'Medical Supplies', '3750.00', '5'),
+    ('wound care supplies kit', 'Medical Supplies', '50.00', '50');
 
 select * from products;
 
